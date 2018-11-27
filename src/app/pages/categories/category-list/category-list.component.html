@@ -32,14 +32,14 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr  *ngFor="let category of categories">
       <td>
-        <strong>Lazer</strong> <br>
-        <small>kndjsndjs</small>
+        <strong>{{category.name}}</strong> <br>
+        <small>{{category.description}}</small>
       </td>
       <td>
-        <a [routerLink]="[10, 'edit']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
-        <button (click)="alert('del')"  class="btn btn-outline-danger btn-sm">Excluir</button>
+        <a [routerLink]="[category.id, 'edit']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
+        <button (click)="delete(category)"  class="btn btn-outline-danger btn-sm">Excluir</button>
       </td>
     </tr>
   </tbody>
