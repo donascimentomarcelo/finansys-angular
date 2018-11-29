@@ -27,8 +27,8 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   ) { }
 
   ngOnInit() {
-    this.setCurrentAction();
     this.buildCategoryForm();
+    this.setCurrentAction();
     this.loadCategory();
   }
 
@@ -37,7 +37,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private setCurrentAction(): void {
-    if (this.activatedRoute.url[0].path === 'new') {
+    if (this.activatedRoute.url['value'][0].path === 'new') {
       this.currentAction = 'new';
     } else {
       this.currentAction = 'edit';
@@ -71,7 +71,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
       this.pageTitle = 'Criando categoria';
     } else {
       const categoryName = this.category.name || '';
-      this.pageTitle = 'Editando categoria :' + categoryName;
+      this.pageTitle = 'Editando categoria : ' + categoryName;
     }
   }
 }
