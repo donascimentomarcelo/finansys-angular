@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from './../shared/Category';
 import { CategoryService } from './../shared/category.service';
 import { switchMap } from 'rxjs/operators';
+import toastr from 'toastr';
 
 @Component({
   selector: 'app-category-form',
@@ -34,6 +35,17 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked(): void {
     this.setTitle();
+  }
+
+  public submitForm(): void {
+    this.submittingForm = true;
+
+    if(this.currentAction === 'new') {
+      this.createCategory();
+    } else {
+      this.updateCategory();
+    }
+
   }
 
   private setCurrentAction(): void {
@@ -74,4 +86,38 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
       this.pageTitle = 'Editando categoria : ' + categoryName;
     }
   }
+
+  private createCategory(): void {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+
+    this.categoryService.create(category)
+      .subscribe(
+        response => this.actionForSuccess(response),
+        error => this.actionForError(error)
+      );
+  }
+
+  private updateCategory(): void {
+
+  }
+
+  private actionForSuccess(category: Category): void {
+    toastr.success('Solicitação processada com sucesso!');
+
+    this.router.navigateByUrl('categories', {skipLocationChange: true}).then(
+      () => this.router.navigate(['vategories', category.id, 'edit'])
+    );
+  }
+
+  private actionForError(error: any) {
+    toastr.error('Ocorreu um erro!');
+    this.submittingForm = false;
+
+    if (error.status === 422) {
+      this.serverErrorMessages = JSON.parse(error._body).errors;
+    } else {
+      this.serverErrorMessages = ['Falha na comunicacao com servidor.']
+    }
+  }
+
 }
