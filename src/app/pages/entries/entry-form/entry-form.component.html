@@ -39,8 +39,7 @@
         <div class="form-group col-md-2">
           <label for="type">Tipo</label>
           <select type="text" class="form-control" id="type" formControlName="type">
-            <option value="expense">Despesa</option>
-            <option value="revenue">Receita</option>
+            <option *ngFor="let option of typeOptions" [value]="option.value">{{ option.text }}</option>
           </select>
 
           <div class="text-danger" *ngIf="entryForm.get('type').invalid && entryForm.get('type').touched">
@@ -116,8 +115,7 @@
         <div class="form-group col-md-6">
           <label for="categoryId">Categoria</label>
           <select type="text" class="form-control" id="categoryId" formControlName="categoryId">
-            <option value="1">Cat 1</option>
-            <option value="2">Cate 2</option>
+            <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
           </select>
   
           <div class="text-danger" *ngIf="entryForm.get('categoryId').invalid && entryForm.get('categoryId').touched">
