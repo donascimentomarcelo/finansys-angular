@@ -46,8 +46,8 @@
       <td class="text-right">
         <strong [class.text-success]="entry.type == 'revenue'" [class.text-danger]="entry.type == 'expense'">
           {{entry.amount}}
-        </strong>
-
+        </strong> <br>
+        <span class="badge badge-light">{{entry.paidText}}</span>
       </td>
       <td class="text-center">
         <a [routerLink]="[entry.id, 'edit']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
