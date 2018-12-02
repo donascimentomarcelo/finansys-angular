@@ -16,14 +16,15 @@ export class EntryListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.carregaCategorias();
+    this.carregaLancamentos();
   }
 
-  public carregaCategorias(): void {
+  public carregaLancamentos(): void {
     this.entryService.getAll()
-      .subscribe((resp) => {
-        this.entries = resp;
-      });
+      .subscribe(
+        resp => this.entries = resp.sort((a, b) => b.id - a.id),
+        error => alert('erro')
+      );
   }
 
   public delete(entry: Entry): void {
