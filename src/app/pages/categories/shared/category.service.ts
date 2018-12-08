@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class CategoryService extends BaseResourceService<Category> {
 
   constructor(protected injector: Injector) {
-    super('spi/categories', injector);
+    super('spi/categories', injector, Category.fromJson);
   }
 
 }
