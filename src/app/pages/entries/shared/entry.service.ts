@@ -19,6 +19,7 @@ export class EntryService extends BaseResourceService<Entry>{
     }
 
   public create(entry: Entry): Observable<Entry> {
+    // this.setCategoryAndSendToServer(entry, this.create.bind(this))
     return this.categoryService.getById(entry.categoryId).pipe(
       flatMap(object => {
         entry.category = object;
@@ -38,5 +39,15 @@ export class EntryService extends BaseResourceService<Entry>{
       })
     );
   }
+
+  // private setCategoryAndSendToServer(entry: Entry, sendFn: any): Observable<Entry> {
+  //   return this.categoryService.getById(entry.categoryId).pipe(
+  //     flatMap(object => {
+  //       entry.category = object;
+  //       return sendFn(sendFn);
+  //     }),
+  //     catchError(this.handlerError)
+  //   );
+  // }
 
 }
