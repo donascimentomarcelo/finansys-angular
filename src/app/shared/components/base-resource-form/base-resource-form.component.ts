@@ -32,13 +32,105 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
    }
 
   ngOnInit() {
-
+    this.buildResourceForm();
+    this.setCurrentAction();
+    this.loadResource();
   }
 
   ngAfterContentChecked(): void {
+    this.setTitle();
+  }
+
+  public submitForm(): void {
+    this.submittingForm = true;
+
+    if(this.currentAction === 'new') {
+      this.createResource();
+    } else {
+      this.updateResource();
+    }
 
   }
 
- 
+  protected setCurrentAction(): void {
+    if (this.activatedRoute.url['value'][0].path === 'new') {
+      this.currentAction = 'new';
+    } else {
+      this.currentAction = 'edit';
+    }
+  }
+
+  protected loadResource(): void {
+    if (this.currentAction === 'edit') {
+
+      this.activatedRoute.paramMap.pipe(
+        switchMap(params => this.resourceService.getById(+params.get('id')))
+      ).subscribe((resp) => {
+        this.resource = resp;
+        this.resourceForm.patchValue(resp);
+      }, error => {
+        console.log(error);
+      });
+    }
+  }
+
+  protected setTitle(): void {
+    if (this.currentAction === 'new') {
+      this.pageTitle = this.creationPageTitle();
+    } else {
+      this.pageTitle = this.editionPageTitle();
+    }
+  }
+
+  protected creationPageTitle(): string {
+    return 'novo';
+  }
+
+  protected editionPageTitle(): string {
+    return 'edição';
+  }
+
+  protected createResource(): void {
+    const resource: T = this.jsonDataToResourceFn(this.resourceForm);
+
+    this.resourceService.create(resource)
+      .subscribe(
+        response => this.actionForSuccess(response),
+        error => this.actionForError(error)
+      );
+  }
+
+  protected updateResource(): void {
+    const resource: T = this.jsonDataToResourceFn(this.resourceForm);
+
+    this.resourceService.update(resource)
+      .subscribe(
+        response => this.actionForSuccess(response),
+        error => this.actionForError(error)
+      );
+  }
+
+  protected actionForSuccess(resource: T): void {
+    toastr.success('Solicitação processada com sucesso!');
+
+    const baseComponentPath: string = this.activatedRoute.snapshot.parent.url[0].path;
+
+    this.router.navigateByUrl(baseComponentPath, {skipLocationChange: true}).then(
+      () => this.router.navigate([baseComponentPath, resource.id, 'edit'])
+    );
+  }
+
+  protected actionForError(error: any) {
+    toastr.error('Ocorreu um erro!');
+    this.submittingForm = false;
+
+    if (error.status === 422) {
+      this.serverErrorMessages = JSON.parse(error._body).errors;
+    } else {
+      this.serverErrorMessages = ['Falha na comunicacao com servidor.']
+    }
+  }
+
+  protected abstract buildResourceForm(): void;
 
 }
