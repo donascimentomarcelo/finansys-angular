@@ -93,7 +93,7 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
   protected createResource(): void {
     const resource: T = this.jsonDataToResourceFn(this.resourceForm);
 
-    this.resourceService.create(resource)
+    this.resourceService.create(resource.value)
       .subscribe(
         response => this.actionForSuccess(response),
         error =>  {
@@ -106,7 +106,7 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
   protected updateResource(): void {
     const resource: T = this.jsonDataToResourceFn(this.resourceForm);
 
-    this.resourceService.update(resource)
+    this.resourceService.update(resource.value)
       .subscribe(
         response => this.actionForSuccess(response),
         error => {
