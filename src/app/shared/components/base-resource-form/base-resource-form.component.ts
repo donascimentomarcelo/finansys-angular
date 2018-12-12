@@ -96,7 +96,10 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     this.resourceService.create(resource)
       .subscribe(
         response => this.actionForSuccess(response),
-        error => this.actionForError(error)
+        error =>  {
+          this.actionForError(error);
+          console.log(error);
+        }
       );
   }
 
@@ -106,7 +109,10 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     this.resourceService.update(resource)
       .subscribe(
         response => this.actionForSuccess(response),
-        error => this.actionForError(error)
+        error => {
+          this.actionForError(error);
+          console.log(error);
+        }
       );
   }
 
