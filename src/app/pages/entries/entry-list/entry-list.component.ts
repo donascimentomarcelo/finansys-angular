@@ -2,38 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { EntryService } from './../shared/entry.service';
 import { element } from '@angular/core/src/render3/instructions';
 import { Entry } from './../shared/entry.model';
+import { BaseResourceListComponent } from 'src/app/shared/components/base-resource-list/base-resource-list.component';
 
 @Component({
   selector: 'app-entry-list',
   templateUrl: './entry-list.component.html',
   styleUrls: ['./entry-list.component.css']
 })
-export class EntryListComponent implements OnInit {
+export class EntryListComponent  extends BaseResourceListComponent<Entry> {
 
-  public entries: Entry[] = [];
   constructor(
-    private entryService: EntryService,
-  ) { }
-
-  ngOnInit() {
-    this.carregaLancamentos();
-  }
-
-  public carregaLancamentos(): void {
-    this.entryService.getAll()
-      .subscribe(
-        resp => this.entries = resp.sort((a, b) => b.id - a.id),
-        error => alert('erro')
-      );
-  }
-
-  public delete(entry: Entry): void {
-    this.entryService.delete(entry.id)
-      .subscribe(() => {
-        this.entries = this.entries.filter(element => element !== entry);
-      }, error => {
-        console.log(error);
-      });
-  }
-
+    protected entryService: EntryService,
+  ) {
+    super(entryService);
+   }
 }
