@@ -15,6 +15,8 @@ export class PageHeaderComponent implements OnInit {
   @Input('button-text') buttonText: string;
   // tslint:disable-next-line:no-input-rename
   @Input('button-link') buttonLink: string;
+  // tslint:disable-next-line:no-input-rename
+  @Input('show-button') showButton = true;
 
   constructor() { }
 
