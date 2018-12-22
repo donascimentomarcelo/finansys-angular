@@ -4,6 +4,7 @@ import { Category } from './../../categories/shared/Category';
 import { Entry } from './../../entries/shared/entry.model';
 import { EntryService } from './../../entries/shared/entry.service';
 import { CategoryService } from './../../categories/shared/category.service';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-reports',
@@ -54,10 +55,36 @@ export class ReportsComponent implements OnInit {
     if (!month || !year) {
       alert('Selecione o mes e o ano');
     } else {
-      this.entryService.getByMonthAndYear(month, year);
+      this.entryService.getByMonthAndYear(month, year)
+        .subscribe(this.setValues.bind(this));
     }
+  }
 
+  private setValues(entries: Entry[]) {
+    this.entries = entries;
+    this.calculateBind();
+    this.setCharData();
+  }
 
+  private calculateBind() {
+
+  }
+
+  private setCharData() {
+    let expenseTotal = 0;
+    let revenueTotal = 0;
+
+    this.entries.forEach(entry => {
+      if (entry.type === 'revenue') {
+        revenueTotal += currencyFormatter.unformat(entry.amount, { code: 'BRL'});
+      } else {
+        expenseTotal += currencyFormatter.unformat(entry.amount, { code: 'BRL'});
+      }
+    });
+
+    this.expenseTotal = currencyFormatter.format(expenseTotal, { code: 'BRL'});
+    this.revenueTotal = currencyFormatter.format(revenueTotal, { code: 'BRL'});
+    this.balance = currencyFormatter.format(revenueTotal - expenseTotal, { code: 'BRL'});
   }
 
 }
