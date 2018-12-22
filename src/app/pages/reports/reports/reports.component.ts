@@ -4,7 +4,6 @@ import { Category } from './../../categories/shared/Category';
 import { Entry } from './../../entries/shared/entry.model';
 import { EntryService } from './../../entries/shared/entry.service';
 import { CategoryService } from './../../categories/shared/category.service';
-import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-reports',
@@ -67,10 +66,6 @@ export class ReportsComponent implements OnInit {
   }
 
   private calculateBind() {
-
-  }
-
-  private setCharData() {
     let expenseTotal = 0;
     let revenueTotal = 0;
 
@@ -85,6 +80,35 @@ export class ReportsComponent implements OnInit {
     this.expenseTotal = currencyFormatter.format(expenseTotal, { code: 'BRL'});
     this.revenueTotal = currencyFormatter.format(revenueTotal, { code: 'BRL'});
     this.balance = currencyFormatter.format(revenueTotal - expenseTotal, { code: 'BRL'});
+  }
+
+  private setCharData() {
+    const chartData = [];
+    this.categories.forEach(category => {
+      const filteredEntries = this.entries.filter(
+        entry => (entry.categoryId === category.id) && (entry.type === 'revenue')
+      );
+
+      if (filteredEntries.length > 0) {
+        const totalAmount = filteredEntries.reduce(
+          (total, entry) => total + currencyFormatter.unformat(entry.amount, {code: 'BRL'}), 0
+        );
+
+        chartData.push({
+          categoryName: category.name,
+          totalAmount: totalAmount
+        });
+      }
+
+      this.revenueChartData = {
+        label: chartData.map(item => item.categoryName),
+        datasets: [{
+          label: 'Gráfico de Receitas',
+          backgroundColor: '#9CCC65',
+          data: chartData.map(item => item.totalAmount)
+        }]
+      };
+    });
   }
 
 }
